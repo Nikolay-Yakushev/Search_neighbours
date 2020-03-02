@@ -14,8 +14,8 @@ Environment:
 2)PostgreSQL ver 11
 3)Linux Mint 19.03
 
-Modules:
-1) psycopg2
-2) falsk
-3) requests
-4) matplotlib
+Modules to be installed:
+1) psycopg2 - 2.8.4
+2) falsk- 1.1.1
+3) requests - 2.22.0
+4) matplotlib - 3.1.3
