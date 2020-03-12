@@ -1,6 +1,5 @@
-import requests
 from time import time
-from random import uniform, randint
+import flask_request
 from matplotlib import pyplot as plt
 
 
@@ -21,67 +20,23 @@ def time_dec(original_func):
 exec_time = {}
 
 
-# Service test functions (CRUD)
-
-# Show all persons method
-def get_pers():  # reference: select_all persons
-    r = requests.get('http://localhost:5000/persons')
-    return r.json()
-
-
-def post_pers(user):  # reference: person_gen
-    payload = {'name': f'{user}',
-               'longitude': f'{uniform(10.000, 10.999)}',
-               'latitude': f'{uniform(10.000, 10.999)}'}
-    r = requests.post('http://localhost:5000/person', params=payload)
-
-
-def put_upd(person):  # reference: update_coords
-    payload = {'name': f"{person}",
-               'longitude': f'{uniform(10.000, 10.999)}',
-               'latitude': f'{uniform(10.000, 10.999)}'}
-    r = requests.put('http://localhost:5000/person', params=payload)
-
-
-
-
-def delete_all_mhd():  # reference: del_all_pers
-    r = requests.delete('http://localhost:5000/persons')
-
-
-def delete_one_mhd(person):  # reference: del_one_pers
-    payload = {'name': f"{person}"}
-    r = requests.delete('http://localhost:5000/person', params=payload)
-
-
-def pers_near(person):  # reference: neighbours
-    payload = {'name': f"{person}",
-               'distance': f'{randint(100, 1000)}'}
-    r = requests.get('http://localhost:5000/persons_near', params=payload)
-
-
-# @time_dec
-def select_all():
-    get_pers()
-
-
-# @time_dec
 def person_gen(pers_range):
     for pers in range(0, pers_range):
-        post_pers(pers)
+        flask_request.post_pers(pers)
 
 
 @time_dec
 def upd_coords(pers_range):
     for pers in range(0, pers_range):
-        put_upd(pers)
+        flask_request.put_upd(pers)
     return pers_range
 
 
 @time_dec
 def neighbour(pers_range):
     for pers in range(0, pers_range):
-        pers_near(pers)
+        res = flask_request.pers_near(pers)
+        # print(res)
     return pers_range
 
 
@@ -91,17 +46,17 @@ def del_one_pers(pers_range):
     # delete_all_mhd()     1) DELETE WHOLE TABLE
     # delete_one_mhd(0, pers_range) 2) DELETE USERS IN TABLE ONE BY ONE
     for pers in range(0, pers_range):
-        delete_one_mhd(pers)
+        flask_request.delete_one_mhd(pers)
     return pers_range
 
 
 # truncate table users, just to mane sure every person is deleted
 def del_all():
-    delete_all_mhd()
+    flask_request.delete_all_mhd()
 
 
 def build_graph():
-    with open('tests_results.txt', 'w') as test_results:
+    with open('.gitignore/tests_results.txt', 'w') as test_results:
         dots = {}
         dots_axis = dots.fromkeys(persons_range, 0)
         for key, value in exec_time.items():
@@ -130,7 +85,7 @@ def build_graph():
 # check time of functions execution with payload of 10, 100, 1000... users
 
 def generate_pers(pers_range, avg=5):
-    select_all()
+    flask_request.select_all()
     person_gen(pers_range)
     upd_coords(avg)
     neighbour(avg)
@@ -139,7 +94,7 @@ def generate_pers(pers_range, avg=5):
 
 
 # testing
-persons_range = [10, 100, 1000, 5000, 10000, 50000, 100000]
+persons_range = [10, 15, 100, 1000, 5000, 10000, 50000, 100000]
 for gen in persons_range:
     generate_pers(gen)
 
