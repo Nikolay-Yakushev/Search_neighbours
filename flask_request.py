@@ -1,6 +1,7 @@
 import requests
 from random import uniform, randint
 
+
 def get_pers():  # reference: select_all persons
     r = requests.get('http://localhost:5000/persons')
     return r.json()
@@ -33,7 +34,8 @@ def pers_near(person):  # reference: neighbours
     payload = {'name': f"{person}",
                'distance': f'{randint(1000, 10000)}'}
     r = requests.get('http://localhost:5000/persons_near', params=payload)
-    return r.content.decode() # todo разобраться с представлением json?
+    return r.content.decode()  # todo разобраться с представлением json?
+
 
 # @time_dec
 def select_all():
